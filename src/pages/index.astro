@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+---
+
+<BaseLayout title="Yatheendra KV">
+  <section class="intro">
+    <h1>Yatheendra KV</h1>
+    <p class="tagline">
+      Engineer. Reader. Thinker.
+    </p>
+    <div class="bio">
+      <p>
+        I write about the things I spend time thinking about — software and the craft
+        of building it, philosophy and the questions that don't have clean answers,
+        sports, film, and occasionally, God.
+      </p>
+      <p>
+        This is a space without an agenda. Just honest writing on whatever's on
+        my mind.
+      </p>
+    </div>
+    <div class="links">
+      <a href="https://github.com/yatheendrakv" target="_blank" rel="noopener">GitHub</a>
+      <a href="mailto:yatheendra@drillbitplagiarism.com">Email</a>
+    </div>
+  </section>
+
+  {posts.length > 0 && (
+    <section class="recent">
+      <div class="section-header">
+        <h2>Recent writing</h2>
+        <a href="/blog" class="see-all">All posts →</a>
+      </div>
+      {posts.map((post) => (
+        <PostCard
+          title={post.data.title}
+          description={post.data.description}
+          pubDate={post.data.pubDate}
+          slug={post.slug}
+          tags={post.data.tags}
+        />
+      ))}
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .intro {
+    padding-bottom: 3rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 3rem;
+  }
+
+  h1 {
+    margin-bottom: 0.25rem;
+  }
+
+  .tagline {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-bottom: 1.75rem;
+  }
+
+  .bio {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    line-height: 1.85;
+    max-width: 560px;
+  }
+
+  .bio p {
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  .links {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 1.75rem;
+    font-size: 0.875rem;
+  }
+
+  .links a {
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1px;
+  }
+
+  .links a:hover {
+    color: var(--fg);
+    border-color: var(--fg);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+  }
+
+  .section-header h2 {
+    font-size: 0.8rem;
+    font-family: var(--sans);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: normal;
+  }
+
+  .see-all {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .see-all:hover {
+    color: var(--fg);
+  }
+</style>

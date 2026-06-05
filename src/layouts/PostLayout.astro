@@ -1,0 +1,176 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  pubDate: Date;
+  tags?: string[];
+}
+
+const { title, description, pubDate, tags = [] } = Astro.props;
+
+const formatted = pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={`${title} — Yatheendra KV`} description={description}>
+  <article>
+    <header class="post-header">
+      <div class="post-meta">
+        <time datetime={pubDate.toISOString()}>{formatted}</time>
+        {tags.length > 0 && (
+          <span class="tags">
+            {tags.map((t) => <span class="tag">{t}</span>)}
+          </span>
+        )}
+      </div>
+      <h1>{title}</h1>
+      {description && <p class="description">{description}</p>}
+    </header>
+
+    <div class="prose">
+      <slot />
+    </div>
+
+    <footer class="post-footer">
+      <a href="/blog">← All writing</a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .post-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    background: var(--border);
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+  }
+
+  .description {
+    margin-top: 0.75rem;
+    font-size: 1.1rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* PROSE */
+  .prose {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    line-height: 1.85;
+  }
+
+  .prose :global(p) {
+    margin-bottom: 1.5rem;
+    color: #222;
+  }
+
+  .prose :global(h2) {
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .prose :global(h3) {
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--muted);
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .prose :global(li) {
+    margin-bottom: 0.4rem;
+    color: #222;
+  }
+
+  .prose :global(blockquote) {
+    border-left: 3px solid var(--border);
+    padding-left: 1.25rem;
+    margin: 2rem 0;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .prose :global(code) {
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: 0.85em;
+    background: var(--border);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+  }
+
+  .prose :global(pre) {
+    background: #1a1a1a;
+    color: #e5e5e5;
+    padding: 1.25rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .prose :global(pre code) {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  .prose :global(a) {
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+  }
+
+  .prose :global(a:hover) {
+    text-decoration-color: var(--fg);
+  }
+
+  .post-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .post-footer a {
+    text-decoration: none;
+  }
+
+  .post-footer a:hover {
+    color: var(--fg);
+  }
+</style>

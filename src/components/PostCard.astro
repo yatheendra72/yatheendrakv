@@ -1,0 +1,84 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  pubDate: Date;
+  slug: string;
+  tags?: string[];
+}
+
+const { title, description, pubDate, slug, tags = [] } = Astro.props;
+
+const formatted = pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+
+<article class="post-card">
+  <time class="date">{formatted}</time>
+  <h2>
+    <a href={`/blog/${slug}`}>{title}</a>
+  </h2>
+  {description && <p class="excerpt">{description}</p>}
+  {tags.length > 0 && (
+    <div class="tags">
+      {tags.map((t) => <span class="tag">{t}</span>)}
+    </div>
+  )}
+</article>
+
+<style>
+  .post-card {
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .post-card:last-child {
+    border-bottom: none;
+  }
+
+  .date {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.02em;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0.35rem;
+  }
+
+  h2 a {
+    text-decoration: none;
+  }
+
+  h2 a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--fg);
+  }
+
+  .excerpt {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 0.6rem;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 0.72rem;
+    background: var(--border);
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    color: var(--muted);
+  }
+</style>
