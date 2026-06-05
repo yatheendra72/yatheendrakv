@@ -19,7 +19,7 @@ const formatted = pubDate.toLocaleDateString('en-US', {
 <article class="post-card">
   <time class="date">{formatted}</time>
   <h2>
-    <a href={`${import.meta.env.BASE_URL}blog/${slug}`}>{title}</a>
+    <a href={`/blog/${slug}`}>{title}</a>
   </h2>
   {description && <p class="excerpt">{description}</p>}
   {tags.length > 0 && (
