@@ -5,80 +5,174 @@ interface Props {
   pubDate: Date;
   slug: string;
   tags?: string[];
+  cover?: string;
+  featured?: boolean;
 }
 
-const { title, description, pubDate, slug, tags = [] } = Astro.props;
+const { title, description, pubDate, slug, tags = [], cover, featured = false } = Astro.props;
 
 const formatted = pubDate.toLocaleDateString('en-US', {
   year: 'numeric',
-  month: 'short',
+  month: 'long',
   day: 'numeric',
 });
+
+const primaryTag = tags[0] ?? 'general';
+
+// Topic-based fallback gradients
+const gradients: Record<string, string> = {
+  watches:     'linear-gradient(135deg, #1a1a2e 0%, #2d2640 50%, #b5975a 100%)',
+  tech:        'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
+  philosophy:  'linear-gradient(135deg, #2d1b1b 0%, #4a2f2f 50%, #8b5e3c 100%)',
+  sports:      'linear-gradient(135deg, #1a2f1a 0%, #2d4a2d 50%, #4a7c4a 100%)',
+  film:        'linear-gradient(135deg, #1a1a2e 0%, #2d1f3d 50%, #6b3fa0 100%)',
+  movies:      'linear-gradient(135deg, #1a1a2e 0%, #2d1f3d 50%, #6b3fa0 100%)',
+  god:         'linear-gradient(135deg, #2d2010 0%, #4a3520 50%, #c9a84c 100%)',
+  meta:        'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #555555 100%)',
+  general:     'linear-gradient(135deg, #1a1a1a 0%, #333333 50%, #666666 100%)',
+};
+
+const bg = gradients[primaryTag.toLowerCase()] ?? gradients.general;
 ---
 
-<article class="post-card">
-  <time class="date">{formatted}</time>
-  <h2>
-    <a href={`/blog/${slug}`}>{title}</a>
-  </h2>
-  {description && <p class="excerpt">{description}</p>}
-  {tags.length > 0 && (
-    <div class="tags">
-      {tags.map((t) => <span class="tag">{t}</span>)}
+<article class:list={['post-card', { featured }]}>
+  <a href={`/blog/${slug}`} class="card-link">
+    <div class="card-image" style={cover ? '' : `background: ${bg}`}>
+      {cover
+        ? <img src={cover} alt={title} loading="lazy" />
+        : <span class="tag-label">{primaryTag.toUpperCase()}</span>
+      }
     </div>
-  )}
+    <div class="card-body">
+      {tags.length > 0 && (
+        <div class="card-tags">
+          {tags.map(t => <span class="tag">{t}</span>)}
+        </div>
+      )}
+      <h2 class="card-title">{title}</h2>
+      {description && <p class="card-excerpt">{description}</p>}
+      <time class="card-date">{formatted}</time>
+    </div>
+  </a>
 </article>
 
 <style>
   .post-card {
-    padding: 1.75rem 0;
-    border-bottom: 1px solid var(--border);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
   }
 
-  .post-card:last-child {
-    border-bottom: none;
+  .post-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-3px);
   }
 
-  .date {
-    display: block;
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin-bottom: 0.35rem;
-    letter-spacing: 0.02em;
-  }
-
-  h2 {
-    font-size: 1.2rem;
-    margin-bottom: 0.35rem;
-  }
-
-  h2 a {
+  .card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     text-decoration: none;
+    color: inherit;
   }
 
-  h2 a:hover {
-    text-decoration: underline;
-    text-decoration-color: var(--fg);
+  .card-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .excerpt {
-    font-size: 0.9rem;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 0.6rem;
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
   }
 
-  .tags {
+  .post-card:hover .card-image img {
+    transform: scale(1.04);
+  }
+
+  .tag-label {
+    font-family: var(--serif);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.08em;
+    user-select: none;
+  }
+
+  .card-body {
+    padding: 1.25rem 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0.5rem;
+  }
+
+  .card-tags {
     display: flex;
     gap: 0.4rem;
     flex-wrap: wrap;
   }
 
   .tag {
-    font-size: 0.72rem;
-    background: var(--border);
-    padding: 0.1rem 0.5rem;
-    border-radius: 999px;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 0.15rem 0.55rem;
+    border-radius: 2px;
+  }
+
+  .card-title {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--fg);
+  }
+
+  .post-card:hover .card-title {
+    color: var(--accent);
+    transition: color var(--transition);
+  }
+
+  .card-excerpt {
+    font-size: 0.85rem;
     color: var(--muted);
+    line-height: 1.6;
+    flex: 1;
+    opacity: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-date {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.25rem;
+  }
+
+  /* FEATURED card — wider image ratio */
+  .post-card.featured .card-image {
+    aspect-ratio: 21 / 9;
+  }
+
+  .post-card.featured .card-title {
+    font-size: 1.5rem;
   }
 </style>
