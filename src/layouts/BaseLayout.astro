@@ -20,10 +20,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
     <script is:inline>
       (function() {
         const stored = localStorage.getItem('theme');
@@ -36,18 +36,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <header>
-      <div class="header-inner">
-        <div class="header-top">
-          <a href="/" class="wordmark">YATI</a>
-        </div>
-        <nav>
+      <nav>
+        <a href="/" class="wordmark">Yati</a>
+        <div class="nav-right">
           <div class="nav-links">
-            <a href="/">Home</a>
-            <a href="/blog">All Writing</a>
-            <a href="/blog?tag=watches">Watches</a>
-            <a href="/blog?tag=tech">Tech</a>
-            <a href="/blog?tag=philosophy">Philosophy</a>
-            <a href="/blog?tag=sports">Sports</a>
+            <a href="/">About</a>
+            <a href="/blog">Writing</a>
           </div>
           <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
             <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -57,8 +51,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
             </svg>
           </button>
-        </nav>
-      </div>
+        </div>
+      </nav>
     </header>
 
     <main>
@@ -66,16 +60,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     </main>
 
     <footer>
-      <div class="footer-inner">
-        <p class="footer-brand">YATI</p>
-        <p class="footer-copy">© {new Date().getFullYear()} Yatheendra KV · Writing on watches, tech, philosophy & more</p>
-        <div class="footer-links">
-          <a href="https://github.com/yatheendra72" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://x.com/yatheendra72" target="_blank" rel="noopener">X / Twitter</a>
-          <a href="https://www.linkedin.com/in/yatikv" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="mailto:yatheendra72@gmail.com">Email</a>
-        </div>
+      <div class="footer-links">
+        <a href="https://github.com/yatheendra72" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://x.com/yatheendra72" target="_blank" rel="noopener">X</a>
+        <a href="https://www.linkedin.com/in/yatikv" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:yatheendra72@gmail.com">Email</a>
       </div>
+      <p>© {new Date().getFullYear()} Yatheendra KV</p>
     </footer>
 
     <script>
@@ -96,34 +87,28 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   }
 
   :root {
-    --bg: #faf9f7;
-    --fg: #1a1a1a;
-    --muted: #6b6b6b;
-    --border: #e2ddd8;
+    --bg: #fafafa;
+    --fg: #111111;
+    --muted: #6b7280;
+    --border: #e5e7eb;
     --card-bg: #ffffff;
     --accent: #b5975a;
-    --accent-dark: #9a7d45;
-    --max-w: 1200px;
-    --content-w: 740px;
-    --serif: 'Playfair Display', Georgia, serif;
-    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --max-w: 680px;
+    --serif: 'Lora', Georgia, serif;
+    --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     --transition: 0.2s ease;
-    --shadow: 0 2px 12px rgba(0,0,0,0.07);
-    --shadow-hover: 0 8px 28px rgba(0,0,0,0.13);
   }
 
   html.dark {
     --bg: #111010;
     --fg: #ede8e0;
-    --muted: #9a9490;
-    --border: #2a2825;
-    --card-bg: #1c1b19;
-    --shadow: 0 2px 12px rgba(0,0,0,0.3);
-    --shadow-hover: 0 8px 28px rgba(0,0,0,0.45);
+    --muted: #9ca3af;
+    --border: #1f2937;
+    --card-bg: #1a1918;
   }
 
   html {
-    font-size: 17px;
+    font-size: 18px;
     background: var(--bg);
     color: var(--fg);
     transition: background var(--transition), color var(--transition);
@@ -143,82 +128,55 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     transition: color var(--transition);
   }
 
-  img {
-    display: block;
-    max-width: 100%;
-  }
-
-  /* ── HEADER ── */
+  /* NAV */
   header {
     border-bottom: 1px solid var(--border);
-    background: var(--bg);
-    transition: background var(--transition), border-color var(--transition);
+    padding: 0 1.5rem;
     position: sticky;
     top: 0;
-    z-index: 100;
+    background: var(--bg);
+    z-index: 10;
+    transition: background var(--transition), border-color var(--transition);
   }
 
-  .header-inner {
+  nav {
     max-width: var(--max-w);
     margin: 0 auto;
-    padding: 0 2rem;
-  }
-
-  .header-top {
-    padding: 1.1rem 0 0.4rem;
-    text-align: center;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .wordmark {
     font-family: var(--serif);
-    font-size: 1.9rem;
-    font-weight: 700;
-    letter-spacing: 0.18em;
+    font-size: 1.2rem;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: 0.01em;
     color: var(--fg);
-    text-decoration: none;
   }
 
-  nav {
+  .nav-right {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 0;
-    border-top: 1px solid var(--border);
-    padding: 0.5rem 0;
-    position: relative;
+    gap: 1.25rem;
   }
 
   .nav-links {
     display: flex;
-    align-items: center;
-    gap: 0;
-  }
-
-  .nav-links a {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    gap: 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
     color: var(--muted);
-    padding: 0.4rem 1rem;
-    border-right: 1px solid var(--border);
-    transition: color var(--transition);
   }
 
-  .nav-links a:first-child {
-    border-left: 1px solid var(--border);
-  }
-
-  .nav-links a:hover {
-    color: var(--fg);
-  }
+  .nav-links a:hover { color: var(--fg); }
 
   .theme-toggle {
-    position: absolute;
-    right: 0;
     background: none;
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 7px;
     padding: 5px 7px;
     cursor: pointer;
     color: var(--muted);
@@ -234,69 +192,58 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   html.dark .icon-moon { display: block; }
   html.dark .icon-sun  { display: none; }
 
-  /* ── MAIN ── */
+  /* MAIN */
   main {
     flex: 1;
+    max-width: var(--max-w);
+    width: 100%;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem;
   }
 
-  /* ── FOOTER ── */
+  /* FOOTER */
   footer {
     border-top: 1px solid var(--border);
-    padding: 2.5rem 2rem;
-    margin-top: 4rem;
-    transition: border-color var(--transition);
-  }
-
-  .footer-inner {
-    max-width: var(--max-w);
-    margin: 0 auto;
+    padding: 2rem 1.5rem;
     text-align: center;
-  }
-
-  .footer-brand {
-    font-family: var(--serif);
-    font-size: 1.3rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    margin-bottom: 0.5rem;
-    opacity: 1;
-    color: var(--fg);
-  }
-
-  .footer-copy {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-bottom: 1rem;
-    opacity: 1;
+    transition: border-color var(--transition);
   }
 
   .footer-links {
     display: flex;
     justify-content: center;
     gap: 1.5rem;
-  }
-
-  .footer-links a {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
     color: var(--muted);
   }
 
   .footer-links a:hover { color: var(--fg); }
 
-  /* ── GLOBAL TYPOGRAPHY ── */
-  h1, h2, h3 {
+  footer p {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  /* TYPOGRAPHY */
+  h1 {
     font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
     line-height: 1.2;
   }
 
-  @media (max-width: 768px) {
-    .header-inner { padding: 0 1rem; }
-    .wordmark { font-size: 1.5rem; }
-    .nav-links a { padding: 0.4rem 0.6rem; font-size: 0.62rem; }
-    .nav-links a[href="/blog?tag=philosophy"],
-    .nav-links a[href="/blog?tag=sports"] { display: none; }
+  h2 {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  @media (max-width: 600px) {
+    html { font-size: 16px; }
+    main { padding: 2.5rem 1.25rem; }
   }
 </style>

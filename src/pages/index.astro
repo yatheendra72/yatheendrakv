@@ -4,355 +4,155 @@ import PostCard from '../components/PostCard.astro';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog'))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-const featured = posts[0];
-const rest = posts.slice(1, 7);
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 4);
 ---
 
 <BaseLayout title="Yati — Watches, Tech, Philosophy & More">
-  <!-- HERO INTRO -->
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="hero-text">
-        <p class="hero-eyebrow">Welcome</p>
-        <h1>I'm Yati.</h1>
-        <p class="hero-bio">
-          Watch enthusiast. Engineer. Curious thinker. I write about horology,
-          technology, philosophy, sports, film, and the big questions worth asking.
-          No agenda — just honest writing on what matters to me.
-        </p>
-        <div class="hero-actions">
-          <a href="/blog" class="btn-primary">Read the Writing</a>
-          <a href="/blog?tag=watches" class="btn-secondary">Watch Reviews →</a>
-        </div>
-      </div>
-      <div class="hero-avatar">
-        <img src="/avatar.jpg" alt="Yati" onerror="this.style.display='none'" />
-        <div class="avatar-ring"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- DIVIDER -->
-  <div class="section-divider">
-    <span>Latest Writing</span>
-  </div>
-
-  <!-- FEATURED POST -->
-  {featured && (
-    <section class="featured-section">
-      <div class="container">
-        <PostCard
-          title={featured.data.title}
-          description={featured.data.description}
-          pubDate={featured.data.pubDate}
-          slug={featured.slug}
-          tags={featured.data.tags}
-          cover={featured.data.cover}
-          featured={true}
-        />
-      </div>
-    </section>
-  )}
-
-  <!-- POST GRID -->
-  {rest.length > 0 && (
-    <section class="grid-section">
-      <div class="container">
-        <div class="post-grid">
-          {rest.map((post) => (
-            <PostCard
-              title={post.data.title}
-              description={post.data.description}
-              pubDate={post.data.pubDate}
-              slug={post.slug}
-              tags={post.data.tags}
-              cover={post.data.cover}
-            />
-          ))}
-        </div>
-        {posts.length > 7 && (
-          <div class="view-all">
-            <a href="/blog" class="btn-outline">View All Writing</a>
-          </div>
-        )}
-      </div>
-    </section>
-  )}
-
-  <!-- ABOUT STRIP -->
-  <section class="about-strip">
-    <div class="container">
-      <div class="about-inner">
-        <div>
-          <p class="about-label">About Yati</p>
-          <p class="about-text">
-            Yatheendra KV — engineer by profession, watch enthusiast by obsession,
-            and a thinker by habit. Based in India. Writing here since 2026.
+  <section class="intro">
+    <div class="intro-row">
+      <div class="intro-text">
+        <h1>Yati</h1>
+        <p class="tagline">Yatheendra KV · Engineer · Watch enthusiast · Curious thinker</p>
+        <div class="bio">
+          <p>
+            I write about the things I spend time thinking about — horology and the
+            craft of watchmaking, software, philosophy, sports, film, and occasionally God.
           </p>
+          <p>No agenda. Just honest writing on whatever's on my mind.</p>
         </div>
-        <div class="topic-pills">
-          <a href="/blog?tag=watches">⌚ Watches</a>
-          <a href="/blog?tag=tech">💻 Tech</a>
-          <a href="/blog?tag=philosophy">🧠 Philosophy</a>
-          <a href="/blog?tag=sports">⚽ Sports</a>
-          <a href="/blog?tag=film">🎬 Film</a>
+        <div class="social-links">
+          <a href="https://github.com/yatheendra72" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://x.com/yatheendra72" target="_blank" rel="noopener">X</a>
+          <a href="https://www.linkedin.com/in/yatikv" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="mailto:yatheendra72@gmail.com">Email</a>
         </div>
+      </div>
+      <div class="avatar-wrap">
+        <img src="/avatar.jpg" alt="Yati" onerror="this.style.display='none'" />
       </div>
     </div>
   </section>
+
+  {posts.length > 0 && (
+    <section class="recent">
+      <div class="section-head">
+        <span class="section-label">Recent writing</span>
+        <a href="/blog" class="see-all">All posts →</a>
+      </div>
+      {posts.map((post) => (
+        <PostCard
+          title={post.data.title}
+          description={post.data.description}
+          pubDate={post.data.pubDate}
+          slug={post.slug}
+          tags={post.data.tags}
+        />
+      ))}
+    </section>
+  )}
 </BaseLayout>
 
 <style>
-  .container {
-    max-width: var(--max-w);
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
-  /* HERO */
-  .hero {
+  /* INTRO */
+  .intro {
+    padding-bottom: 3rem;
     border-bottom: 1px solid var(--border);
-    padding: 4rem 2rem 3.5rem;
+    margin-bottom: 3rem;
+    transition: border-color var(--transition);
   }
 
-  .hero-inner {
-    max-width: var(--max-w);
-    margin: 0 auto;
+  .intro-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    gap: 3rem;
+    gap: 2rem;
   }
 
-  .hero-text {
-    flex: 1;
-    max-width: 580px;
-  }
+  .intro-text { flex: 1; }
 
-  .hero-eyebrow {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.75rem;
-    opacity: 1;
-  }
+  h1 { margin-bottom: 0.25rem; }
 
-  h1 {
-    font-family: var(--serif);
-    font-size: 3.5rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin-bottom: 1.25rem;
-  }
-
-  .hero-bio {
-    font-size: 1.05rem;
-    line-height: 1.8;
+  .tagline {
+    font-size: 0.82rem;
     color: var(--muted);
-    max-width: 500px;
-    margin-bottom: 2rem;
-    opacity: 1;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.01em;
   }
 
-  .hero-actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+  .bio {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    line-height: 1.85;
   }
 
-  .btn-primary {
-    background: var(--fg);
-    color: var(--bg);
-    padding: 0.7rem 1.5rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    border-radius: 2px;
-    transition: opacity var(--transition);
+  .bio p {
+    margin-bottom: 0.9rem;
+    color: var(--fg);
+    opacity: 0.85;
   }
 
-  .btn-primary:hover { opacity: 0.8; }
+  /* AVATAR */
+  .avatar-wrap { flex-shrink: 0; }
 
-  .btn-secondary {
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    color: var(--accent);
-    padding: 0.7rem 0;
-    border-bottom: 1px solid var(--accent);
-    transition: color var(--transition), border-color var(--transition);
-  }
-
-  .btn-secondary:hover { color: var(--accent-dark); border-color: var(--accent-dark); }
-
-  .hero-avatar {
-    flex-shrink: 0;
-    position: relative;
-    width: 180px;
-    height: 180px;
-  }
-
-  .hero-avatar img {
-    width: 180px;
-    height: 180px;
+  .avatar-wrap img {
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     object-fit: cover;
     object-position: center top;
-    position: relative;
-    z-index: 1;
-    border: 3px solid var(--border);
+    border: 2px solid var(--border);
+    transition: border-color var(--transition);
   }
 
-  .avatar-ring {
-    position: absolute;
-    inset: -6px;
-    border-radius: 50%;
-    border: 2px solid var(--accent);
-    opacity: 0.4;
-  }
-
-  /* DIVIDER */
-  .section-divider {
-    text-align: center;
-    padding: 2.5rem 0 0;
-    position: relative;
-  }
-
-  .section-divider::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 2rem;
-    right: 2rem;
-    height: 1px;
-    background: var(--border);
-  }
-
-  .section-divider span {
-    position: relative;
-    background: var(--bg);
-    padding: 0 1.5rem;
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-    transition: background var(--transition);
-  }
-
-  /* FEATURED */
-  .featured-section {
-    padding: 2rem 0 0;
-  }
-
-  /* GRID */
-  .grid-section {
-    padding: 2rem 0 3rem;
-  }
-
-  .post-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    margin-top: 0;
-  }
-
-  .view-all {
-    text-align: center;
-    margin-top: 2.5rem;
-  }
-
-  .btn-outline {
-    display: inline-block;
-    border: 1px solid var(--fg);
-    padding: 0.7rem 2rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    border-radius: 2px;
-    transition: background var(--transition), color var(--transition);
-  }
-
-  .btn-outline:hover {
-    background: var(--fg);
-    color: var(--bg);
-  }
-
-  /* ABOUT STRIP */
-  .about-strip {
-    background: var(--card-bg);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 2.5rem 0;
-    transition: background var(--transition), border-color var(--transition);
-  }
-
-  .about-inner {
+  /* SOCIAL */
+  .social-links {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    flex-wrap: wrap;
-  }
-
-  .about-label {
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.4rem;
-    opacity: 1;
-  }
-
-  .about-text {
-    font-family: var(--serif);
-    font-size: 0.95rem;
-    color: var(--muted);
-    max-width: 480px;
-    line-height: 1.7;
-    opacity: 1;
-  }
-
-  .topic-pills {
-    display: flex;
-    flex-wrap: wrap;
     gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
   }
 
-  .topic-pills a {
-    font-size: 0.72rem;
+  .social-links a {
+    font-size: 0.76rem;
     font-weight: 500;
-    padding: 0.4rem 0.85rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
     color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
     transition: color var(--transition), border-color var(--transition);
   }
 
-  .topic-pills a:hover {
+  .social-links a:hover {
     color: var(--fg);
     border-color: var(--fg);
   }
 
-  @media (max-width: 900px) {
-    .post-grid { grid-template-columns: repeat(2, 1fr); }
+  /* RECENT */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
   }
 
-  @media (max-width: 600px) {
-    h1 { font-size: 2.5rem; }
-    .hero { padding: 2.5rem 1.25rem 2rem; }
-    .hero-inner { flex-direction: column-reverse; gap: 1.5rem; }
-    .hero-avatar { width: 110px; height: 110px; }
-    .hero-avatar img { width: 110px; height: 110px; }
-    .post-grid { grid-template-columns: 1fr; }
-    .container { padding: 0 1.25rem; }
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .see-all {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .see-all:hover { color: var(--fg); }
+
+  @media (max-width: 500px) {
+    .intro-row { flex-direction: column-reverse; gap: 1.25rem; }
+    .avatar-wrap img { width: 80px; height: 80px; }
   }
 </style>

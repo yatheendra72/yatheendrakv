@@ -6,7 +6,6 @@ import { getCollection } from 'astro:content';
 const allPosts = (await getCollection('blog'))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-// Get tag from URL query param (for filtering)
 const tag = Astro.url.searchParams.get('tag') ?? '';
 const posts = tag
   ? allPosts.filter(p => p.data.tags.map(t => t.toLowerCase()).includes(tag.toLowerCase()))
@@ -16,150 +15,84 @@ const allTags = [...new Set(allPosts.flatMap(p => p.data.tags))];
 ---
 
 <BaseLayout
-  title={tag ? `${tag.charAt(0).toUpperCase() + tag.slice(1)} — Yati` : 'All Writing — Yati'}
-  description="Essays, reviews and notes on watches, tech, philosophy, sports, film, and more."
+  title={tag ? `${tag.charAt(0).toUpperCase() + tag.slice(1)} — Yati` : 'Writing — Yati'}
+  description="Essays and notes on watches, tech, philosophy, sports, film and more."
 >
   <div class="page-header">
-    <div class="container">
-      <p class="eyebrow">The Archive</p>
-      <h1>{tag ? tag.charAt(0).toUpperCase() + tag.slice(1) : 'All Writing'}</h1>
-      <p class="subtitle">Essays, reviews and notes — on everything that matters.</p>
-    </div>
+    <h1>{tag ? tag.charAt(0).toUpperCase() + tag.slice(1) : 'Writing'}</h1>
+    <p>Essays, notes and reviews — on everything.</p>
   </div>
 
-  <div class="filter-bar">
-    <div class="container">
-      <div class="filters">
-        <a href="/blog" class:list={['filter', { active: !tag }]}>All</a>
-        {allTags.map(t => (
-          <a href={`/blog?tag=${t}`} class:list={['filter', { active: tag === t }]}>{t}</a>
-        ))}
-      </div>
-    </div>
+  <div class="filters">
+    <a href="/blog" class:list={['filter', { active: !tag }]}>All</a>
+    {allTags.map(t => (
+      <a href={`/blog?tag=${t}`} class:list={['filter', { active: tag === t }]}>{t}</a>
+    ))}
   </div>
 
-  <div class="container">
-    {posts.length === 0 ? (
-      <p class="empty">No posts yet in this category — check back soon.</p>
-    ) : (
-      <div class="post-grid">
-        {posts.map((post) => (
+  <div class="posts">
+    {posts.length === 0
+      ? <p class="empty">Nothing here yet — check back soon.</p>
+      : posts.map((post) => (
           <PostCard
             title={post.data.title}
             description={post.data.description}
             pubDate={post.data.pubDate}
             slug={post.slug}
             tags={post.data.tags}
-            cover={post.data.cover}
           />
-        ))}
-      </div>
-    )}
+        ))
+    }
   </div>
 </BaseLayout>
 
 <style>
-  .container {
-    max-width: var(--max-w);
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
   .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--border);
-    padding: 3.5rem 0 2.5rem;
-    background: var(--card-bg);
-    transition: background var(--transition), border-color var(--transition);
+    transition: border-color var(--transition);
   }
 
-  .eyebrow {
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.6rem;
-    opacity: 1;
-  }
+  .page-header h1 { margin-bottom: 0.3rem; }
 
-  h1 {
-    font-family: var(--serif);
-    font-size: 2.8rem;
-    font-weight: 700;
-    margin-bottom: 0.75rem;
-  }
-
-  .subtitle {
+  .page-header p {
+    font-size: 0.95rem;
     color: var(--muted);
-    font-size: 1rem;
-    opacity: 1;
-  }
-
-  /* FILTER BAR */
-  .filter-bar {
-    border-bottom: 1px solid var(--border);
-    padding: 0;
-    position: sticky;
-    top: 93px;
-    background: var(--bg);
-    z-index: 50;
-    transition: background var(--transition), border-color var(--transition);
   }
 
   .filters {
     display: flex;
-    gap: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
   }
-
-  .filters::-webkit-scrollbar { display: none; }
 
   .filter {
     font-size: 0.68rem;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
-    padding: 0.85rem 1.1rem;
-    border-bottom: 2px solid transparent;
-    white-space: nowrap;
-    transition: color var(--transition), border-color var(--transition);
-    flex-shrink: 0;
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    transition: color var(--transition), border-color var(--transition), background var(--transition);
   }
 
-  .filter:hover { color: var(--fg); }
+  .filter:hover { color: var(--fg); border-color: var(--fg); }
 
   .filter.active {
     color: var(--fg);
-    border-bottom-color: var(--accent);
-  }
-
-  /* GRID */
-  .post-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.75rem;
-    padding: 2.5rem 0 4rem;
+    border-color: var(--fg);
+    background: var(--fg);
+    color: var(--bg);
   }
 
   .empty {
-    text-align: center;
-    color: var(--muted);
-    padding: 4rem 0;
-    font-style: italic;
     font-family: var(--serif);
-    opacity: 1;
-  }
-
-  @media (max-width: 900px) {
-    .post-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  @media (max-width: 600px) {
-    .container { padding: 0 1.25rem; }
-    h1 { font-size: 2rem; }
-    .post-grid { grid-template-columns: 1fr; }
-    .filter-bar { top: 80px; }
+    font-style: italic;
+    color: var(--muted);
+    padding: 2rem 0;
   }
 </style>

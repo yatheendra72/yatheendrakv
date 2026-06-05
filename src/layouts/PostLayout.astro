@@ -9,207 +9,127 @@ interface Props {
   cover?: string;
 }
 
-const { title, description, pubDate, tags = [], cover } = Astro.props;
+const { title, description, pubDate, tags = [] } = Astro.props;
 
 const formatted = pubDate.toLocaleDateString('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
 });
-
-const primaryTag = tags[0] ?? 'general';
-
-const gradients: Record<string, string> = {
-  watches:    'linear-gradient(135deg, #1a1a2e 0%, #2d2640 50%, #b5975a 100%)',
-  tech:       'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
-  philosophy: 'linear-gradient(135deg, #2d1b1b 0%, #4a2f2f 50%, #8b5e3c 100%)',
-  sports:     'linear-gradient(135deg, #1a2f1a 0%, #2d4a2d 50%, #4a7c4a 100%)',
-  film:       'linear-gradient(135deg, #1a1a2e 0%, #2d1f3d 50%, #6b3fa0 100%)',
-  movies:     'linear-gradient(135deg, #1a1a2e 0%, #2d1f3d 50%, #6b3fa0 100%)',
-  god:        'linear-gradient(135deg, #2d2010 0%, #4a3520 50%, #c9a84c 100%)',
-  meta:       'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #555 100%)',
-  general:    'linear-gradient(135deg, #1a1a1a 0%, #333 50%, #666 100%)',
-};
-
-const heroBg = gradients[primaryTag.toLowerCase()] ?? gradients.general;
 ---
 
 <BaseLayout title={`${title} — Yati`} description={description}>
-  <!-- HERO -->
-  <div class="post-hero" style={cover ? '' : `background: ${heroBg}`}>
-    {cover && <img src={cover} alt={title} class="hero-img" />}
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      {tags.length > 0 && (
-        <div class="hero-tags">
-          {tags.map(t => <span class="tag">{t}</span>)}
-        </div>
-      )}
+  <article>
+    <header class="post-header">
+      <div class="post-meta">
+        <time datetime={pubDate.toISOString()}>{formatted}</time>
+        {tags.length > 0 && (
+          <div class="tags">
+            {tags.map((t) => (
+              <a href={`/blog?tag=${t}`} class="tag">{t}</a>
+            ))}
+          </div>
+        )}
+      </div>
       <h1>{title}</h1>
-      {description && <p class="hero-desc">{description}</p>}
-      <p class="hero-meta">
-        By <strong>Yati</strong> · <time>{formatted}</time>
-      </p>
-    </div>
-  </div>
+      {description && <p class="description">{description}</p>}
+    </header>
 
-  <!-- ARTICLE -->
-  <div class="article-wrap">
-    <article class="prose">
+    <div class="prose">
       <slot />
-    </article>
-
-    <div class="post-footer">
-      <a href="/blog" class="back-link">← Back to all writing</a>
-      {tags.length > 0 && (
-        <div class="footer-tags">
-          {tags.map(t => (
-            <a href={`/blog?tag=${t}`} class="footer-tag">{t}</a>
-          ))}
-        </div>
-      )}
     </div>
-  </div>
+
+    <footer class="post-footer">
+      <a href="/blog">← All writing</a>
+    </footer>
+  </article>
 </BaseLayout>
 
 <style>
-  /* HERO */
-  .post-hero {
-    position: relative;
-    width: 100%;
-    min-height: 420px;
+  .post-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    transition: border-color var(--transition);
+  }
+
+  .post-meta {
     display: flex;
-    align-items: flex-end;
-    overflow: hidden;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 0.85rem;
   }
 
-  .hero-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 1;
-    max-width: var(--max-w);
-    margin: 0 auto;
-    width: 100%;
-    padding: 2.5rem 2rem 3rem;
-  }
-
-  .hero-tags {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
+  .tags { display: flex; gap: 0.4rem; }
 
   .tag {
-    font-size: 0.62rem;
+    font-size: 0.65rem;
     font-weight: 600;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--accent);
     border: 1px solid var(--accent);
-    padding: 0.2rem 0.6rem;
+    padding: 0.1rem 0.5rem;
     border-radius: 2px;
-    background: rgba(0,0,0,0.3);
+    opacity: 0.85;
+    transition: opacity var(--transition);
   }
 
-  h1 {
+  .tag:hover { opacity: 1; }
+
+  .description {
+    margin-top: 0.75rem;
     font-family: var(--serif);
-    font-size: 2.8rem;
-    font-weight: 700;
-    line-height: 1.15;
-    color: #ffffff;
-    letter-spacing: -0.01em;
-    max-width: 780px;
-    margin-bottom: 1rem;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.4);
-  }
-
-  .hero-desc {
+    font-style: italic;
     font-size: 1.1rem;
-    color: rgba(255,255,255,0.8);
-    max-width: 600px;
-    line-height: 1.65;
-    margin-bottom: 1.25rem;
-    opacity: 1;
+    color: var(--muted);
+    line-height: 1.6;
   }
 
-  .hero-meta {
-    font-size: 0.78rem;
-    color: rgba(255,255,255,0.6);
-    letter-spacing: 0.04em;
-    opacity: 1;
-  }
-
-  .hero-meta strong { color: rgba(255,255,255,0.85); }
-
-  /* ARTICLE BODY */
-  .article-wrap {
-    max-width: var(--content-w);
-    margin: 0 auto;
-    padding: 3.5rem 2rem 5rem;
-  }
-
+  /* PROSE */
   .prose {
     font-family: var(--serif);
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     line-height: 1.9;
-    color: var(--fg);
   }
 
-  .prose :global(p) {
-    margin-bottom: 1.75rem;
-  }
+  .prose :global(p) { margin-bottom: 1.6rem; }
 
   .prose :global(h2) {
-    font-family: var(--serif);
-    font-size: 1.65rem;
-    font-weight: 600;
-    margin: 3rem 0 1rem;
+    font-size: 1.45rem;
+    font-weight: 500;
+    margin: 2.75rem 0 0.75rem;
     letter-spacing: -0.01em;
-    line-height: 1.25;
-    color: var(--fg);
   }
 
   .prose :global(h3) {
     font-family: var(--sans);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     color: var(--accent);
-    margin: 2.5rem 0 0.75rem;
+    margin: 2.25rem 0 0.6rem;
   }
 
   .prose :global(blockquote) {
-    border-left: 3px solid var(--accent);
-    padding: 0.5rem 0 0.5rem 1.5rem;
-    margin: 2.5rem 0;
+    border-left: 2px solid var(--accent);
+    padding: 0.25rem 0 0.25rem 1.35rem;
+    margin: 2.25rem 0;
     color: var(--muted);
     font-style: italic;
-    font-size: 1.15rem;
-    line-height: 1.7;
+    font-size: 1.1rem;
+    line-height: 1.75;
   }
 
   .prose :global(ul), .prose :global(ol) {
-    padding-left: 1.75rem;
-    margin-bottom: 1.75rem;
+    padding-left: 1.5rem;
+    margin-bottom: 1.6rem;
   }
 
-  .prose :global(li) {
-    margin-bottom: 0.5rem;
-  }
+  .prose :global(li) { margin-bottom: 0.4rem; }
 
   .prose :global(a) {
     color: var(--accent);
@@ -218,13 +138,11 @@ const heroBg = gradients[primaryTag.toLowerCase()] ?? gradients.general;
     transition: text-decoration-color var(--transition);
   }
 
-  .prose :global(a:hover) {
-    text-decoration-color: var(--accent);
-  }
+  .prose :global(a:hover) { text-decoration-color: var(--accent); }
 
   .prose :global(code) {
     font-family: 'SFMono-Regular', Consolas, monospace;
-    font-size: 0.85em;
+    font-size: 0.82em;
     background: var(--border);
     padding: 0.15em 0.4em;
     border-radius: 3px;
@@ -233,25 +151,17 @@ const heroBg = gradients[primaryTag.toLowerCase()] ?? gradients.general;
   .prose :global(pre) {
     background: #1a1a1a;
     color: #e5e5e5;
-    padding: 1.5rem;
+    padding: 1.35rem;
     border-radius: 4px;
     overflow-x: auto;
-    margin-bottom: 1.75rem;
+    margin-bottom: 1.6rem;
     font-size: 0.875rem;
     line-height: 1.6;
   }
 
   .prose :global(pre code) {
-    background: none;
-    padding: 0;
-    font-size: inherit;
-    color: inherit;
-  }
-
-  .prose :global(img) {
-    width: 100%;
-    border-radius: 4px;
-    margin: 2rem 0;
+    background: none; padding: 0;
+    font-size: inherit; color: inherit;
   }
 
   .prose :global(hr) {
@@ -262,53 +172,14 @@ const heroBg = gradients[primaryTag.toLowerCase()] ?? gradients.general;
 
   /* POST FOOTER */
   .post-footer {
-    margin-top: 4rem;
-    padding-top: 2rem;
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
     border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .back-link {
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 500;
     color: var(--muted);
-    transition: color var(--transition);
+    transition: border-color var(--transition);
   }
 
-  .back-link:hover { color: var(--fg); }
-
-  .footer-tags {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .footer-tag {
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    border: 1px solid var(--accent);
-    padding: 0.2rem 0.6rem;
-    border-radius: 2px;
-    transition: background var(--transition), color var(--transition);
-  }
-
-  .footer-tag:hover {
-    background: var(--accent);
-    color: white;
-  }
-
-  @media (max-width: 600px) {
-    h1 { font-size: 1.9rem; }
-    .post-hero { min-height: 300px; }
-    .article-wrap { padding: 2rem 1.25rem 4rem; }
-  }
+  .post-footer a:hover { color: var(--fg); }
 </style>
