@@ -40,8 +40,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         <a href="/" class="wordmark">Yati</a>
         <div class="nav-right">
           <div class="nav-links">
-            <a href="/">About</a>
             <a href="/blog">Writing</a>
+            <a href="/about">About</a>
           </div>
           <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
             <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -87,30 +87,45 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   }
 
   :root {
-    --bg: #fafafa;
-    --fg: #111111;
-    --muted: #6b7280;
-    --border: #e5e7eb;
-    --card-bg: #ffffff;
-    --accent: #b5975a;
+    --bg: #f6efe2;
+    --bg-tint: #efe5d3;
+    --fg: #2c2521;
+    --muted: #8c7d69;
+    --border: #e4d8c2;
+    --card-bg: #fffdf7;
+    --accent: #b07a36;
+    --accent-2: #c8924a;
+    --accent-soft: rgba(176, 122, 54, 0.12);
+    --shadow-sm: 0 1px 2px rgba(74, 56, 30, 0.05), 0 2px 6px rgba(74, 56, 30, 0.05);
+    --shadow-md: 0 4px 12px rgba(74, 56, 30, 0.08), 0 12px 28px rgba(74, 56, 30, 0.07);
     --max-w: 680px;
+    --radius: 16px;
+    --radius-sm: 10px;
     --serif: 'Lora', Georgia, serif;
     --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --transition: 0.2s ease;
+    --transition: 0.22s ease;
   }
 
   html.dark {
-    --bg: #111010;
-    --fg: #ede8e0;
-    --muted: #9ca3af;
-    --border: #1f2937;
-    --card-bg: #1a1918;
+    --bg: #17130e;
+    --bg-tint: #1f1a13;
+    --fg: #ece2d2;
+    --muted: #a4937c;
+    --border: #2f2820;
+    --card-bg: #211b14;
+    --accent: #d8a85e;
+    --accent-2: #e6bd76;
+    --accent-soft: rgba(216, 168, 94, 0.15);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.4), 0 14px 32px rgba(0, 0, 0, 0.3);
   }
 
   html {
     font-size: 18px;
     background: var(--bg);
     color: var(--fg);
+    /* keep anchor targets clear of the 58px sticky nav */
+    scroll-padding-top: 74px;
     transition: background var(--transition), color var(--transition);
   }
 
@@ -120,6 +135,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background-image:
+      radial-gradient(900px circle at 50% -10%, var(--accent-soft), transparent 60%);
+    background-attachment: fixed;
   }
 
   a {
@@ -134,7 +152,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     padding: 0 1.5rem;
     position: sticky;
     top: 0;
-    background: var(--bg);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: saturate(1.4) blur(10px);
+    -webkit-backdrop-filter: saturate(1.4) blur(10px);
     z-index: 1000;
     transition: background var(--transition), border-color var(--transition);
   }
@@ -150,12 +170,26 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
   .wordmark {
     font-family: var(--serif);
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: 500;
     font-style: italic;
     letter-spacing: 0.01em;
     color: var(--fg);
+    transition: color var(--transition);
   }
+
+  .wordmark::after {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    margin-left: 3px;
+    border-radius: 50%;
+    background: var(--accent);
+    vertical-align: baseline;
+  }
+
+  .wordmark:hover { color: var(--accent); }
 
   .nav-right {
     display: flex;
@@ -199,27 +233,36 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     width: 100%;
     margin: 0 auto;
     padding: 3.5rem 1.5rem;
+    /* contain content in its own stacking context so it scrolls
+       behind the sticky nav instead of painting over it */
+    position: relative;
+    z-index: 0;
   }
 
   /* FOOTER */
   footer {
     border-top: 1px solid var(--border);
-    padding: 2rem 1.5rem;
+    background: var(--bg-tint);
+    padding: 2.5rem 1.5rem;
     text-align: center;
-    transition: border-color var(--transition);
+    transition: border-color var(--transition), background var(--transition);
   }
 
   .footer-links {
     display: flex;
     justify-content: center;
     gap: 1.5rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.85rem;
     font-size: 0.8rem;
     font-weight: 500;
     color: var(--muted);
   }
 
-  .footer-links a:hover { color: var(--fg); }
+  .footer-links a {
+    transition: color var(--transition);
+  }
+
+  .footer-links a:hover { color: var(--accent); }
 
   footer p {
     font-size: 0.75rem;
@@ -229,17 +272,22 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   /* TYPOGRAPHY */
   h1 {
     font-family: var(--serif);
-    font-size: 2rem;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    line-height: 1.2;
+    font-size: 2.3rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
   }
 
   h2 {
     font-family: var(--serif);
-    font-size: 1.3rem;
+    font-size: 1.35rem;
     font-weight: 500;
     line-height: 1.3;
+  }
+
+  ::selection {
+    background: var(--accent-soft);
+    color: var(--fg);
   }
 
   @media (max-width: 600px) {

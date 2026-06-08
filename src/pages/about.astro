@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About — Yati"
+  description="About Yatheendra KV — engineer, watch enthusiast, and curious thinker writing on horology, software, philosophy, sports, film and more."
+>
+  <section class="about-hero">
+    <div class="avatar-wrap">
+      <img src="/avatar.jpg" alt="Yati" onerror="this.style.display='none'" />
+    </div>
+    <div class="about-intro">
+      <p class="eyebrow">About</p>
+      <h1>Yatheendra KV</h1>
+      <p class="tagline">Engineer · Watch enthusiast · Curious thinker</p>
+    </div>
+  </section>
+
+  <div class="about-body">
+    <p>
+      I'm an engineer by trade and a generalist by temperament. This is my corner of
+      the internet — a place to think out loud about the things I keep coming back to.
+    </p>
+    <p>
+      I write about horology and the craft of watchmaking, software and how it's made,
+      philosophy and the questions that won't go away, plus the books, films and sport
+      that fill the rest of my time. No agenda, no content calendar — just honest writing
+      on whatever's on my mind.
+    </p>
+
+    <h2>What you'll find here</h2>
+    <p>
+      Essays and notes that range from the mechanical poetry of an automatic movement to
+      the discipline of good code, from arguments I'm still having with myself to the
+      occasional thought about God. If any of that sounds like your kind of thing, the
+      <a href="/blog">writing</a> is the best place to start.
+    </p>
+
+    <h2>Elsewhere</h2>
+    <div class="social-links">
+      <a href="https://github.com/yatheendra72" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://x.com/yatheendra72" target="_blank" rel="noopener">X</a>
+      <a href="https://www.linkedin.com/in/yatikv" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="mailto:yatheendra72@gmail.com">Email</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .about-hero {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    padding: 2.25rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .avatar-wrap { flex-shrink: 0; }
+
+  .avatar-wrap img {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    border: 3px solid var(--card-bg);
+    box-shadow: 0 0 0 2px var(--accent), var(--shadow-md);
+  }
+
+  .eyebrow {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    margin-bottom: 0.45rem;
+  }
+
+  h1 { margin-bottom: 0.35rem; }
+
+  .tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.98rem;
+    color: var(--muted);
+  }
+
+  .about-body {
+    font-family: var(--serif);
+    font-size: 1.07rem;
+    line-height: 1.9;
+  }
+
+  .about-body p { margin-bottom: 1.5rem; }
+
+  .about-body h2 {
+    margin: 2.5rem 0 0.85rem;
+    font-size: 1.4rem;
+  }
+
+  .about-body a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color var(--transition);
+  }
+
+  .about-body a:hover { text-decoration-color: var(--accent); }
+
+  .social-links {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+    font-family: var(--sans);
+  }
+
+  .social-links a {
+    font-size: 0.76rem;
+    font-weight: 500;
+    color: var(--muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: color var(--transition), border-color var(--transition),
+      background var(--transition), transform var(--transition);
+  }
+
+  .social-links a:hover {
+    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 540px) {
+    .about-hero {
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+      padding: 1.75rem;
+    }
+    .social-links { justify-content: center; }
+  }
+</style>

@@ -3,44 +3,85 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('blog'))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 4);
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const featured = allPosts[0];
+const rest = allPosts.slice(1, 4);
+
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const topics = [
+  { slug: 'watches', label: 'Watches', blurb: 'Horology and the craft of watchmaking.' },
+  { slug: 'tech', label: 'Tech', blurb: 'Software, and how good things get built.' },
+  { slug: 'philosophy', label: 'Philosophy', blurb: "The questions that won't go away." },
+  { slug: 'books', label: 'Books', blurb: 'What I\'m reading and why it stuck.' },
+  { slug: 'movies', label: 'Movies', blurb: 'Film, story, and the occasional rewatch.' },
+  { slug: 'sports', label: 'Sports', blurb: 'The games worth caring about.' },
+];
 ---
 
 <BaseLayout title="Yati — Watches, Tech, Philosophy & More">
-  <section class="intro">
-    <div class="intro-row">
-      <div class="intro-text">
-        <h1>Yati</h1>
-        <p class="tagline">Yatheendra KV · Engineer · Watch enthusiast · Curious thinker</p>
-        <div class="bio">
-          <p>
-            I write about the things I spend time thinking about — horology and the
-            craft of watchmaking, software, philosophy, sports, film, and occasionally God.
-          </p>
-          <p>No agenda. Just honest writing on whatever's on my mind.</p>
+  <section class="masthead">
+    <p class="eyebrow">Yatheendra KV</p>
+    <p class="masthead-line">
+      Honest writing on watches, software, philosophy, books, film and sport.
+    </p>
+  </section>
+
+  {featured && (
+    <section class="featured">
+      <a href={`/blog/${featured.slug}`} class="featured-card">
+        {featured.data.cover && (
+          <div class="featured-media">
+            <img
+              src={featured.data.cover}
+              alt={featured.data.coverAlt ?? featured.data.title}
+              onerror="this.closest('.featured-media').style.display='none'"
+            />
+          </div>
+        )}
+        <div class="featured-body">
+          <span class="featured-eyebrow">Latest essay</span>
+          <h2 class="featured-title">{featured.data.title}</h2>
+          {featured.data.description && (
+            <p class="featured-excerpt">{featured.data.description}</p>
+          )}
+          <div class="featured-meta">
+            <time>{fmtDate(featured.data.pubDate)}</time>
+            {featured.data.tags.length > 0 && (
+              <span class="dot">·</span>
+            )}
+            {featured.data.tags.map((t) => <span class="tag">{t}</span>)}
+          </div>
+          <span class="featured-read">Read the essay →</span>
         </div>
-        <div class="social-links">
-          <a href="https://github.com/yatheendra72" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://x.com/yatheendra72" target="_blank" rel="noopener">X</a>
-          <a href="https://www.linkedin.com/in/yatikv" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="mailto:yatheendra72@gmail.com">Email</a>
-        </div>
-      </div>
-      <div class="avatar-wrap">
-        <img src="/avatar.jpg" alt="Yati" onerror="this.style.display='none'" />
-      </div>
+      </a>
+    </section>
+  )}
+
+  <section class="topics">
+    <div class="section-head">
+      <span class="section-label">What I write about</span>
+    </div>
+    <div class="topic-grid">
+      {topics.map((t) => (
+        <a href={`/blog/tag/${t.slug}`} class="topic-card">
+          <span class="topic-label">{t.label}</span>
+          <span class="topic-blurb">{t.blurb}</span>
+        </a>
+      ))}
     </div>
   </section>
 
-  {posts.length > 0 && (
+  {rest.length > 0 && (
     <section class="recent">
       <div class="section-head">
-        <span class="section-label">Recent writing</span>
+        <span class="section-label">More writing</span>
         <a href="/blog" class="see-all">All posts →</a>
       </div>
-      {posts.map((post) => (
+      {rest.map((post) => (
         <PostCard
           title={post.data.title}
           description={post.data.description}
@@ -54,105 +95,203 @@ const posts = (await getCollection('blog'))
 </BaseLayout>
 
 <style>
-  /* INTRO */
-  .intro {
-    padding-bottom: 3rem;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 3rem;
-    transition: border-color var(--transition);
+  /* MASTHEAD */
+  .masthead {
+    padding: 0.5rem 0 1.75rem;
   }
 
-  .intro-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 2rem;
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
   }
 
-  .intro-text { flex: 1; }
-
-  h1 { margin-bottom: 0.25rem; }
-
-  .tagline {
-    font-size: 0.82rem;
-    color: var(--muted);
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.01em;
+  .masthead-line {
+    font-family: var(--serif);
+    font-size: 1.45rem;
+    line-height: 1.35;
+    color: var(--fg);
+    max-width: 30ch;
   }
 
-  .bio {
+  /* FEATURED */
+  .featured { margin-bottom: 2.75rem; }
+
+  .featured-card {
+    display: block;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: transform var(--transition), box-shadow var(--transition),
+      border-color var(--transition);
+  }
+
+  .featured-card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  }
+
+  .featured-media {
+    aspect-ratio: 16 / 8;
+    overflow: hidden;
+    background: var(--bg-tint);
+  }
+
+  .featured-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .featured-card:hover .featured-media img { transform: scale(1.04); }
+
+  .featured-body { padding: 1.75rem 2rem 2rem; }
+
+  .featured-eyebrow {
+    display: inline-block;
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    margin-bottom: 0.7rem;
+  }
+
+  .featured-title {
+    font-size: 1.7rem;
+    line-height: 1.2;
+    margin-bottom: 0.6rem;
+  }
+
+  .featured-excerpt {
     font-family: var(--serif);
     font-size: 1.05rem;
-    line-height: 1.85;
-  }
-
-  .bio p {
-    margin-bottom: 0.9rem;
-    color: var(--fg);
-    opacity: 0.85;
-  }
-
-  /* AVATAR */
-  .avatar-wrap { flex-shrink: 0; }
-
-  .avatar-wrap img {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: center top;
-    border: 2px solid var(--border);
-    transition: border-color var(--transition);
-  }
-
-  /* SOCIAL */
-  .social-links {
-    display: flex;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-    margin-top: 1.5rem;
-  }
-
-  .social-links a {
-    font-size: 0.76rem;
-    font-weight: 500;
+    line-height: 1.7;
     color: var(--muted);
-    border: 1px solid var(--border);
-    padding: 0.3rem 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .featured-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 1.1rem;
+  }
+
+  .featured-meta .dot { opacity: 0.6; }
+
+  .featured-meta .tag {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 0.2rem 0.6rem;
     border-radius: 999px;
-    transition: color var(--transition), border-color var(--transition);
   }
 
-  .social-links a:hover {
-    color: var(--fg);
-    border-color: var(--fg);
+  .featured-read {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
   }
 
-  /* RECENT */
+  /* SECTION HEADS */
   .section-head {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.25rem;
+    margin-bottom: 1rem;
   }
 
   .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
     font-size: 0.7rem;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
+    letter-spacing: 0.14em;
+    color: var(--fg);
+  }
+
+  .section-label::before {
+    content: "";
+    width: 22px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
   }
 
   .see-all {
     font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent);
+    transition: opacity var(--transition);
+  }
+
+  .see-all:hover { opacity: 0.7; }
+
+  /* TOPICS */
+  .topics {
+    padding: 2.25rem 0;
+    margin-bottom: 2.5rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 0.9rem;
+  }
+
+  .topic-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.1rem 1.2rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition), box-shadow var(--transition),
+      border-color var(--transition);
+  }
+
+  .topic-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  }
+
+  .topic-label {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--fg);
+  }
+
+  .topic-blurb {
+    font-size: 0.84rem;
+    line-height: 1.5;
     color: var(--muted);
   }
 
-  .see-all:hover { color: var(--fg); }
-
-  @media (max-width: 500px) {
-    .intro-row { flex-direction: column-reverse; gap: 1.25rem; }
-    .avatar-wrap img { width: 80px; height: 80px; }
+  @media (max-width: 540px) {
+    .masthead-line { font-size: 1.2rem; }
+    .featured-body { padding: 1.5rem; }
+    .featured-title { font-size: 1.4rem; }
   }
 </style>

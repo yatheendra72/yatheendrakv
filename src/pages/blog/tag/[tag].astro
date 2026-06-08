@@ -1,27 +1,45 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostCard from '../../components/PostCard.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostCard from '../../../components/PostCard.astro';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+export async function getStaticPaths() {
+  // Topics surfaced on the landing page — always get a page, even with no posts yet.
+  const TOPICS = ['watches', 'tech', 'philosophy', 'books', 'movies', 'sports'];
 
-const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
+  const posts = (await getCollection('blog', ({ data }) => !data.draft))
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+  const postTags = [...new Set(posts.flatMap((p) => p.data.tags))];
+  const allTags = [...new Set([...postTags, ...TOPICS])].sort();
+
+  return allTags.map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: posts.filter((p) => p.data.tags.includes(tag)),
+      allTags,
+    },
+  }));
+}
+
+const { tag, posts, allTags } = Astro.props;
+const heading = tag.charAt(0).toUpperCase() + tag.slice(1);
 ---
 
 <BaseLayout
-  title="Writing — Yati"
-  description="Essays and notes on watches, tech, philosophy, sports, film and more."
+  title={`${heading} — Yati`}
+  description={`Writing tagged "${tag}" by Yati.`}
 >
   <div class="page-header">
-    <h1>Writing</h1>
-    <p>Essays, notes and reviews — on everything.</p>
+    <h1>{heading}</h1>
+    <p>Writing tagged <em>{tag}</em>.</p>
   </div>
 
   <div class="filters">
-    <a href="/blog" class:list={['filter', { active: true }]}>All</a>
-    {allTags.map(t => (
-      <a href={`/blog/tag/${t}`} class="filter">{t}</a>
+    <a href="/blog" class="filter">All</a>
+    {allTags.map((t) => (
+      <a href={`/blog/tag/${t}`} class:list={['filter', { active: t === tag }]}>{t}</a>
     ))}
   </div>
 
@@ -54,6 +72,12 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
   .page-header p {
     font-size: 0.95rem;
     color: var(--muted);
+  }
+
+  .page-header em {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent);
   }
 
   .filters {
