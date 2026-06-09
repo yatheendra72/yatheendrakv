@@ -44,7 +44,12 @@ const trackId = music
 
     {cover && (
       <figure class="cover">
-        <img src={cover} alt={coverAlt ?? title} loading="eager" />
+        <img
+          src={cover}
+          alt={coverAlt ?? title}
+          loading="eager"
+          onerror="this.closest('.cover').style.display='none'"
+        />
         {coverAlt && <figcaption>{coverAlt}</figcaption>}
       </figure>
     )}
