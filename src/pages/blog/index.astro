@@ -84,7 +84,7 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
   }
 
   .filter.active {
-    color: #fff;
+    color: var(--on-accent);
     border-color: var(--accent);
     background: var(--accent);
   }

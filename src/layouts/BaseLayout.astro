@@ -75,6 +75,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
       });
+
     </script>
   </body>
 </html>
@@ -87,45 +88,45 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   }
 
   :root {
-    --bg: #f6efe2;
-    --bg-tint: #efe5d3;
-    --fg: #2c2521;
-    --muted: #8c7d69;
-    --border: #e4d8c2;
-    --card-bg: #fffdf7;
-    --accent: #b07a36;
-    --accent-2: #c8924a;
-    --accent-soft: rgba(176, 122, 54, 0.12);
-    --shadow-sm: 0 1px 2px rgba(74, 56, 30, 0.05), 0 2px 6px rgba(74, 56, 30, 0.05);
-    --shadow-md: 0 4px 12px rgba(74, 56, 30, 0.08), 0 12px 28px rgba(74, 56, 30, 0.07);
+    --bg: #ffffff;
+    --bg-tint: #f7f7f5;
+    --fg: #242424;
+    --muted: #6b6b6b;
+    --border: #e6e6e6;
+    --card-bg: #ffffff;
+    --accent: #242424;
+    --accent-2: #000000;
+    --on-accent: #ffffff;
+    --accent-soft: rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.07);
     --max-w: 680px;
-    --radius: 16px;
-    --radius-sm: 10px;
+    --radius: 12px;
+    --radius-sm: 8px;
     --serif: 'Lora', Georgia, serif;
     --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --transition: 0.22s ease;
+    --transition: 0.2s ease;
   }
 
   html.dark {
-    --bg: #17130e;
-    --bg-tint: #1f1a13;
-    --fg: #ece2d2;
-    --muted: #a4937c;
-    --border: #2f2820;
-    --card-bg: #211b14;
-    --accent: #d8a85e;
-    --accent-2: #e6bd76;
-    --accent-soft: rgba(216, 168, 94, 0.15);
+    --bg: #1a1a1a;
+    --bg-tint: #232323;
+    --fg: #e8e8e8;
+    --muted: #9a9a9a;
+    --border: #343434;
+    --card-bg: #1f1f1f;
+    --accent: #e8e8e8;
+    --accent-2: #ffffff;
+    --on-accent: #1a1a1a;
+    --accent-soft: rgba(255, 255, 255, 0.08);
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.4), 0 14px 32px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.4);
   }
 
   html {
-    font-size: 18px;
+    font-size: 16px;
     background: var(--bg);
     color: var(--fg);
-    /* keep anchor targets clear of the 58px sticky nav */
-    scroll-padding-top: 74px;
     transition: background var(--transition), color var(--transition);
   }
 
@@ -135,9 +136,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background-image:
-      radial-gradient(900px circle at 50% -10%, var(--accent-soft), transparent 60%);
-    background-attachment: fixed;
   }
 
   a {
@@ -146,15 +144,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     transition: color var(--transition);
   }
 
-  /* NAV */
-  header {
+  /* NAV — solid fixed top bar. Scope to the page's top-level header only,
+     so it doesn't also pin <header class="post-header"> inside articles. */
+  body > header {
     border-bottom: 1px solid var(--border);
     padding: 0 1.5rem;
     position: sticky;
     top: 0;
-    background: color-mix(in srgb, var(--bg) 82%, transparent);
-    backdrop-filter: saturate(1.4) blur(10px);
-    -webkit-backdrop-filter: saturate(1.4) blur(10px);
+    background: var(--bg);
     z-index: 1000;
     transition: background var(--transition), border-color var(--transition);
   }
@@ -233,8 +230,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     width: 100%;
     margin: 0 auto;
     padding: 3.5rem 1.5rem;
-    /* contain content in its own stacking context so it scrolls
-       behind the sticky nav instead of painting over it */
     position: relative;
     z-index: 0;
   }
@@ -272,15 +267,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   /* TYPOGRAPHY */
   h1 {
     font-family: var(--serif);
-    font-size: 2.3rem;
+    font-size: 2.05rem;
     font-weight: 600;
     letter-spacing: -0.015em;
-    line-height: 1.15;
+    line-height: 1.18;
   }
 
   h2 {
     font-family: var(--serif);
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     font-weight: 500;
     line-height: 1.3;
   }
