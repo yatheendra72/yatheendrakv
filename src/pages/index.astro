@@ -136,8 +136,9 @@ const topics = [
     border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
   }
 
+  /* fixed frame — whole photo shown inside, centered, never cropped */
   .featured-media {
-    aspect-ratio: 16 / 8;
+    height: 340px;
     overflow: hidden;
     background: var(--bg-tint);
   }
@@ -145,12 +146,16 @@ const topics = [
   .featured-media img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
     transition: transform 0.4s ease;
   }
 
-  .featured-card:hover .featured-media img { transform: scale(1.04); }
+  .featured-card:hover .featured-media img { transform: scale(1.03); }
+
+  @media (max-width: 540px) {
+    .featured-media { height: 260px; }
+  }
 
   .featured-body { padding: 1.75rem 2rem 2rem; }
 
