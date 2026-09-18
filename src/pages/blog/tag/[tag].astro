@@ -30,6 +30,7 @@ const heading = tag.charAt(0).toUpperCase() + tag.slice(1);
 <BaseLayout
   title={`${heading} — Yati`}
   description={`Writing tagged "${tag}" by Yati.`}
+  wide
 >
   <div class="page-header">
     <h1>{heading}</h1>
@@ -78,6 +79,18 @@ const heading = tag.charAt(0).toUpperCase() + tag.slice(1);
     font-family: var(--serif);
     font-style: italic;
     color: var(--accent);
+  }
+
+  .posts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.1rem;
+  }
+
+  .posts :global(.post-card) { margin-bottom: 0; }
+
+  @media (max-width: 720px) {
+    .posts { grid-template-columns: 1fr; }
   }
 
   .filters {

@@ -12,10 +12,11 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
 <BaseLayout
   title="Writing — Yati"
   description="Essays and notes on watches, tech, philosophy, sports, film and more."
+  wide
 >
   <div class="page-header">
     <h1>Writing</h1>
-    <p>Essays, notes and reviews — on everything.</p>
+    <p>Essays, notes and the occasional ramble — on everything.</p>
   </div>
 
   <div class="filters">
@@ -54,6 +55,18 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
   .page-header p {
     font-size: 0.95rem;
     color: var(--muted);
+  }
+
+  .posts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.1rem;
+  }
+
+  .posts :global(.post-card) { margin-bottom: 0; }
+
+  @media (max-width: 720px) {
+    .posts { grid-template-columns: 1fr; }
   }
 
   .filters {

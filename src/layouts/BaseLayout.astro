@@ -2,9 +2,10 @@
 interface Props {
   title: string;
   description?: string;
+  wide?: boolean;
 }
 
-const { title, description = "Yati — writing on watches, tech, philosophy, sports and more." } = Astro.props;
+const { title, description = "Yati — writing on watches, tech, philosophy, sports and more.", wide = false } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -55,7 +56,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       </nav>
     </header>
 
-    <main>
+    <main class:list={{ wide }}>
       <slot />
     </main>
 
@@ -89,20 +90,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
   :root {
     --bg: #ffffff;
-    --bg-tint: #f7f7f5;
+    --bg-tint: #f4f3f1;
     --fg: #242424;
     --muted: #6b6b6b;
-    --border: #e6e6e6;
+    --border: #e7e5e2;
     --card-bg: #ffffff;
-    --accent: #242424;
-    --accent-2: #000000;
+    --accent: #d15a34;
+    --accent-2: #b8492a;
     --on-accent: #ffffff;
-    --accent-soft: rgba(0, 0, 0, 0.05);
+    --accent-soft: rgba(209, 90, 52, 0.10);
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.07);
+    --shadow-md: 0 8px 22px rgba(30, 25, 20, 0.09);
     --max-w: 680px;
-    --radius: 12px;
-    --radius-sm: 8px;
+    --max-w-wide: 1060px;
+    --radius: 18px;
+    --radius-sm: 12px;
     --serif: 'Lora', Georgia, serif;
     --sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     --transition: 0.2s ease;
@@ -110,17 +112,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
   html.dark {
     --bg: #1a1a1a;
-    --bg-tint: #232323;
-    --fg: #e8e8e8;
-    --muted: #9a9a9a;
-    --border: #343434;
-    --card-bg: #1f1f1f;
-    --accent: #e8e8e8;
-    --accent-2: #ffffff;
-    --on-accent: #1a1a1a;
-    --accent-soft: rgba(255, 255, 255, 0.08);
+    --bg-tint: #232220;
+    --fg: #e8e6e2;
+    --muted: #9a938a;
+    --border: #34322e;
+    --card-bg: #201f1d;
+    --accent: #e67a55;
+    --accent-2: #f0916f;
+    --on-accent: #ffffff;
+    --accent-soft: rgba(230, 122, 85, 0.14);
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
   }
 
   html {
@@ -157,7 +159,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   }
 
   nav {
-    max-width: var(--max-w);
+    max-width: var(--max-w-wide);
     margin: 0 auto;
     height: 58px;
     display: flex;
@@ -233,6 +235,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     position: relative;
     z-index: 0;
   }
+
+  main.wide { max-width: var(--max-w-wide); }
 
   /* FOOTER */
   footer {

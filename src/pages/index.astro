@@ -22,7 +22,7 @@ const topics = [
 ];
 ---
 
-<BaseLayout title="Yati — Watches, Tech, Philosophy & More">
+<BaseLayout title="Yati — Watches, Tech, Philosophy & More" wide>
   <section class="masthead">
     <p class="eyebrow">Yatheendra KV</p>
     <p class="masthead-line">
@@ -43,7 +43,7 @@ const topics = [
           </div>
         )}
         <div class="featured-body">
-          <span class="featured-eyebrow">Latest essay</span>
+          <span class="featured-eyebrow">Latest story</span>
           <h2 class="featured-title">{featured.data.title}</h2>
           {featured.data.description && (
             <p class="featured-excerpt">{featured.data.description}</p>
@@ -55,7 +55,7 @@ const topics = [
             )}
             {featured.data.tags.map((t) => <span class="tag">{t}</span>)}
           </div>
-          <span class="featured-read">Read the essay →</span>
+          <span class="featured-read">Read the story →</span>
         </div>
       </a>
     </section>
@@ -63,7 +63,7 @@ const topics = [
 
   <section class="topics">
     <div class="section-head">
-      <span class="section-label">What I write about</span>
+      <span class="section-label">Stuff I write about</span>
     </div>
     <div class="topic-grid">
       {topics.map((t) => (
@@ -78,18 +78,20 @@ const topics = [
   {rest.length > 0 && (
     <section class="recent">
       <div class="section-head">
-        <span class="section-label">More writing</span>
-        <a href="/blog" class="see-all">All posts →</a>
+        <span class="section-label">More stories</span>
+        <a href="/blog" class="see-all">See all →</a>
       </div>
-      {rest.map((post) => (
-        <PostCard
-          title={post.data.title}
-          description={post.data.description}
-          pubDate={post.data.pubDate}
-          slug={post.slug}
-          tags={post.data.tags}
-        />
-      ))}
+      <div class="post-grid">
+        {rest.map((post) => (
+          <PostCard
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            slug={post.slug}
+            tags={post.data.tags}
+          />
+        ))}
+      </div>
     </section>
   )}
 </BaseLayout>
@@ -111,17 +113,18 @@ const topics = [
 
   .masthead-line {
     font-family: var(--serif);
-    font-size: 1.45rem;
-    line-height: 1.35;
+    font-size: 1.7rem;
+    line-height: 1.3;
     color: var(--fg);
-    max-width: 30ch;
+    max-width: 24ch;
   }
 
-  /* FEATURED */
-  .featured { margin-bottom: 2.75rem; }
+  /* FEATURED — two-column magazine block on wide screens */
+  .featured { margin-bottom: 3rem; }
 
   .featured-card {
-    display: block;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -138,7 +141,7 @@ const topics = [
 
   /* fixed frame — whole photo shown inside, centered, never cropped */
   .featured-media {
-    height: 340px;
+    min-height: 360px;
     overflow: hidden;
     background: var(--bg-tint);
   }
@@ -153,11 +156,18 @@ const topics = [
 
   .featured-card:hover .featured-media img { transform: scale(1.03); }
 
-  @media (max-width: 540px) {
-    .featured-media { height: 260px; }
+  .featured-body {
+    padding: 2.25rem 2.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
-  .featured-body { padding: 1.75rem 2rem 2rem; }
+  @media (max-width: 720px) {
+    .featured-card { grid-template-columns: 1fr; }
+    .featured-media { min-height: 260px; height: 300px; }
+    .featured-body { padding: 1.75rem; }
+  }
 
   .featured-eyebrow {
     display: inline-block;
@@ -294,9 +304,21 @@ const topics = [
     color: var(--muted);
   }
 
+  /* MORE STORIES — two-up grid */
+  .post-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.1rem;
+  }
+
+  .post-grid :global(.post-card) { margin-bottom: 0; }
+
+  @media (max-width: 720px) {
+    .post-grid { grid-template-columns: 1fr; }
+  }
+
   @media (max-width: 540px) {
-    .masthead-line { font-size: 1.2rem; }
-    .featured-body { padding: 1.5rem; }
+    .masthead-line { font-size: 1.3rem; }
     .featured-title { font-size: 1.4rem; }
   }
 </style>
