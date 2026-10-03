@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
 import { getCollection } from 'astro:content';
+import { upcoming } from '../data/upcoming';
 
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -58,6 +59,24 @@ const topics = [
           <span class="featured-read">Read the story →</span>
         </div>
       </a>
+    </section>
+  )}
+
+  {upcoming.length > 0 && (
+    <section class="coming">
+      <div class="section-head">
+        <span class="section-label">Coming up next</span>
+      </div>
+      <p class="coming-intro">A few of the figures I'm planning to write about soon.</p>
+      <div class="coming-grid">
+        {upcoming.map((item, i) => (
+          <div class:list={['coming-card', { 'is-next': i === 0 }]}>
+            <span class="coming-tag">{i === 0 ? 'Up next' : 'Soon'}</span>
+            <span class="coming-name">{item.name}</span>
+            {item.note && <span class="coming-note">{item.note}</span>}
+          </div>
+        ))}
+      </div>
     </section>
   )}
 
@@ -125,6 +144,7 @@ const topics = [
   .featured-card {
     display: grid;
     grid-template-columns: 1.05fr 1fr;
+    align-items: center;
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -139,9 +159,9 @@ const topics = [
     border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
   }
 
-  /* fixed frame — whole photo shown inside, centered, never cropped */
+  /* fixed frame — whole photo shown inside, centered, never cropped (same as the post page) */
   .featured-media {
-    min-height: 360px;
+    height: 380px;
     overflow: hidden;
     background: var(--bg-tint);
   }
@@ -299,6 +319,69 @@ const topics = [
   }
 
   .topic-blurb {
+    font-size: 0.84rem;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+
+  /* COMING UP NEXT */
+  .coming { margin-bottom: 2.75rem; }
+
+  .coming-intro {
+    font-family: var(--serif);
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin: -0.5rem 0 1.1rem;
+  }
+
+  .coming-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.9rem;
+  }
+
+  .coming-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.1rem 1.2rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .coming-card.is-next {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    background: var(--accent-soft);
+  }
+
+  .coming-tag {
+    align-self: flex-start;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    margin-bottom: 0.15rem;
+  }
+
+  .coming-card.is-next .coming-tag {
+    color: var(--on-accent);
+    background: var(--accent);
+  }
+
+  .coming-name {
+    font-family: var(--serif);
+    font-size: 1.12rem;
+    font-weight: 500;
+    color: var(--fg);
+  }
+
+  .coming-note {
     font-size: 0.84rem;
     line-height: 1.5;
     color: var(--muted);
